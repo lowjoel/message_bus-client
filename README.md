@@ -1,4 +1,5 @@
 # MessageBus::Client
+[![Build Status](https://travis-ci.org/lowjoel/message_bus-client.svg?branch=master)](https://travis-ci.org/lowjoel/message_bus-client)[![Coverage Status](https://coveralls.io/repos/github/lowjoel/message_bus-client/badge.svg?branch=master)](https://coveralls.io/github/lowjoel/message_bus-client?branch=master)[![Code Climate](https://codeclimate.com/github/lowjoel/message_bus-client/badges/gpa.svg)](https://codeclimate.com/github/lowjoel/message_bus-client)[![security](https://hakiri.io/github/lowjoel/message_bus-client/master.svg)](https://hakiri.io/github/lowjoel/message_bus-client/master)[![Inline docs](http://inch-ci.org/github/lowjoel/message_bus-client.svg?branch=master)](http://inch-ci.org/github/lowjoel/message_bus-client)
 
 This is a Ruby implementation of the client for
 [message_bus](https://github.com/samsaffron/message_bus).
