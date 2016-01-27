@@ -18,6 +18,7 @@ module MessageBus::Client::MessageHandler
   def initialize(base_url)
     super
 
+    @pending_messages = []
     @subscribed_channels = {}
     @subscribed_channels.default_proc = proc do |hash, key|
       hash[key] = SubscribedChannel.new
@@ -62,8 +63,15 @@ module MessageBus::Client::MessageHandler
     handle_response(message)
   end
 
-  def handle_messages(messages)
-    messages.each(&method(:handle_message))
+  def handle_messages(messages = nil)
+    if paused?
+      @pending_messages.concat(messages)
+    else
+      handle_message_method = method(:handle_message)
+      @pending_messages.each(&handle_message_method)
+      messages.each(&handle_message_method) if messages
+    end
+
   end
 
   def handle_message(message)

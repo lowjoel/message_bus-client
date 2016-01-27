@@ -1,4 +1,4 @@
-describe MessageBus::Client do
+RSpec.describe MessageBus::Client do
   it 'has a version number' do
     expect(MessageBus::Client::VERSION).not_to be nil
   end
@@ -38,7 +38,7 @@ describe MessageBus::Client do
     it 'receives messages' do
       subject.start
 
-      message = 'Hello World!'
+      message = "Hello World! #{Random.rand}"
       result = false
       subject.subscribe('/message') do |payload|
         expect(payload['data']).to eq(message)
@@ -56,9 +56,12 @@ describe MessageBus::Client do
     around(:each) do |example|
       begin
         old_long_polling = MessageBus::Client.long_polling
+        old_poll_interval = MessageBus::Client.poll_interval
+        MessageBus::Client.poll_interval = 1
         MessageBus::Client.long_polling = false
         example.call
       ensure
+        MessageBus::Client.poll_interval = old_poll_interval
         MessageBus::Client.long_polling = old_long_polling
       end
     end
@@ -71,7 +74,7 @@ describe MessageBus::Client do
     it 'receives messages' do
       subject.start
 
-      message = 'Hello World!'
+      message = "Hello World! #{Random.rand}"
       result = false
       subject.subscribe('/message') do |payload|
         expect(payload['data']).to eq(message)
@@ -83,5 +86,31 @@ describe MessageBus::Client do
         sleep(1)
       end
     end
+  end
+
+  it 'allows pausing messages' do
+    subject.start
+    subject.pause
+
+    text = "Hello Pause! #{Random.rand}"
+    result = false
+    subject.subscribe('/message') {}
+    expect(subject).to receive(:handle_messages).and_wrap_original do |original, *args|
+      result = true if args.first && args.first.any? { |message| message['data']['data'] == text }
+      original.call(*args)
+    end.at_least(:once)
+
+    until result
+      write_message(text) # Keep writing because the message bus might not have started.
+      sleep(1)
+    end
+    result = false
+
+    subject.subscribe('/message') do |payload|
+      result = payload['data'] == text
+    end
+
+    subject.resume
+    expect(result).to eq(true)
   end
 end
