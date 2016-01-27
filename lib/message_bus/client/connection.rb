@@ -86,7 +86,8 @@ module MessageBus::Client::Connection
 
   # The request parameters when connecting to the server with Excon.
   def request_parameters
-    request_body = URI.encode_www_form(@subscribed_channels.merge(__seq: @statistics[:total_calls]))
+    request_body = URI.encode_www_form(subscribed_channel_indices.
+                                       merge(__seq: @statistics[:total_calls]))
     request_parameters = { body: request_body, headers: headers, read_timeout: 360 }
     request_parameters[:response_block] = method(:handle_chunk).to_proc if self.class.long_polling
 

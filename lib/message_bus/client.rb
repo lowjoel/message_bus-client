@@ -1,4 +1,5 @@
 require 'excon'
+require 'json'
 
 require 'message_bus/client/version'
 require 'message_bus/client/configuration'

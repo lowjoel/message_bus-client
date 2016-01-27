@@ -3,6 +3,12 @@ describe MessageBus::Client do
     expect(MessageBus::Client::VERSION).not_to be nil
   end
 
+  def write_message(message, user = 'message_bus-client')
+    Excon.post('http://chat.samsaffron.com/message',
+               body: URI.encode_www_form(name: user, data: message),
+               headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
+  end
+
   subject { MessageBus::Client.new('http://chat.samsaffron.com') }
 
   context 'when using long polling' do
@@ -28,6 +34,22 @@ describe MessageBus::Client do
         subject.stop
       end
     end
+
+    it 'receives messages' do
+      subject.start
+
+      message = 'Hello World!'
+      result = false
+      subject.subscribe('/message') do |payload|
+        expect(payload['data']).to eq(message)
+        result = true
+      end
+
+      until result
+        write_message(message) # Keep writing because the message bus might not have started.
+        sleep(1)
+      end
+    end
   end
 
   context 'when using polling' do
@@ -44,6 +66,22 @@ describe MessageBus::Client do
     it 'connects to the server' do
       subject.start
       subject.stop
+    end
+
+    it 'receives messages' do
+      subject.start
+
+      message = 'Hello World!'
+      result = false
+      subject.subscribe('/message') do |payload|
+        expect(payload['data']).to eq(message)
+        result = true
+      end
+
+      until result
+        write_message(message) # Keep writing because the message bus might not have started.
+        sleep(1)
+      end
     end
   end
 end
