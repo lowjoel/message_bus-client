@@ -38,15 +38,14 @@ RSpec.describe MessageBus::Client do
     it 'receives messages' do
       subject.start
 
-      message = "Hello World! #{Random.rand}"
+      text = "Hello World! #{Random.rand}"
       result = false
       subject.subscribe('/message') do |payload|
-        expect(payload['data']).to eq(message)
-        result = true
+        result = true if payload['data'] == text
       end
 
       until result
-        write_message(message) # Keep writing because the message bus might not have started.
+        write_message(text) # Keep writing because the message bus might not have started.
         sleep(1)
       end
     end
@@ -74,15 +73,14 @@ RSpec.describe MessageBus::Client do
     it 'receives messages' do
       subject.start
 
-      message = "Hello World! #{Random.rand}"
+      text = "Hello World! #{Random.rand}"
       result = false
       subject.subscribe('/message') do |payload|
-        expect(payload['data']).to eq(message)
-        result = true
+        result = true if payload['data'] == text
       end
 
       until result
-        write_message(message) # Keep writing because the message bus might not have started.
+        write_message(text) # Keep writing because the message bus might not have started.
         sleep(1)
       end
     end
@@ -107,7 +105,7 @@ RSpec.describe MessageBus::Client do
     result = false
 
     subject.subscribe('/message') do |payload|
-      result = payload['data'] == text
+      result = result || payload['data'] == text
     end
 
     subject.resume
