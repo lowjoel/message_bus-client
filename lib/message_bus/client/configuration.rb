@@ -4,7 +4,12 @@ module MessageBus::Client::Configuration
   end
 
   module ClassMethods
+    attr_accessor :long_polling
+    attr_accessor :poll_interval
+
     def self.extended(module_)
+      module_.long_polling = true
+      module_.poll_interval = 15
     end
   end
 end

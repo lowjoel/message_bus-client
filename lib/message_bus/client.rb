@@ -10,7 +10,8 @@ class MessageBus::Client
   include MessageBus::Client::Connection
   include MessageBus::Client::MessageHandler
 
-  def initialize
+  def initialize(base_url)
+    super
     @client_id = SecureRandom.uuid
   end
 end
