@@ -26,7 +26,7 @@ The API is mostly equivalent with the JavaScript client:
 
 ```ruby
 client = MessageBus::Client.new('http://chat.samsaffron.com/')
-subject.subscribe('/message') do |payload|
+client.subscribe('/message') do |payload|
   # Do stuff
 end
 
