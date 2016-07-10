@@ -48,6 +48,9 @@ MessageBus::Client.poll_interval = 15 # seconds
 After checking out the repo, run `bundle install` to install dependencies. Then, run `rake spec` to
 run the tests.
 
+If you are running Windows, Ruby is not able to kill the server process. Run it separately using
+`rake server` before running the specs.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at

@@ -1,15 +1,17 @@
 RSpec.describe MessageBus::Client do
+  self::SERVER_BASE = 'http://127.0.0.1:9292'.freeze
+
   it 'has a version number' do
     expect(MessageBus::Client::VERSION).not_to be nil
   end
 
   def write_message(message, user = 'message_bus-client')
-    Excon.post('http://chat.samsaffron.com/message',
+    Excon.post(URI.join(self.class::SERVER_BASE, '/message').to_s,
                body: URI.encode_www_form(name: user, data: message),
                headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
   end
 
-  subject { MessageBus::Client.new('http://chat.samsaffron.com') }
+  subject { MessageBus::Client.new(self.class::SERVER_BASE) }
 
   context 'when using long polling' do
     it 'connects to the server' do
