@@ -6,7 +6,8 @@ RSpec::Core::RakeTask.new(:spec)
 task :server do
   pid = 0
   Bundler.with_clean_env do
-    pid = spawn "bundle exec puma 'spec/chat_server.ru'"
+    nul = RbConfig::CONFIG['host_os'] =~ /mswin|mingw/ ? 'nul' : '/dev/null'
+    pid = spawn "bundle exec puma 'spec/chat_server.ru' 2>#{nul}"
   end
 
   at_exit do
