@@ -26,5 +26,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'coveralls'
   spec.add_development_dependency 'codeclimate-test-reporter'
 
+  # These dependencies are for running the Chat server locally.
+  spec.add_development_dependency 'message_bus'
+  spec.add_development_dependency 'puma'
+  spec.add_development_dependency 'sinatra'
+
   spec.add_dependency 'excon', '~> 0.45'
 end
