@@ -1,4 +1,4 @@
-module MessageBus::Client::Configuration
+module MessageBusClient::Configuration
   def self.included(module_)
     module_.extend(ClassMethods)
   end

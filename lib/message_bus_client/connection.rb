@@ -1,4 +1,4 @@
-module MessageBus::Client::Connection
+module MessageBusClient::Connection
   # The connection is in the initialised state.
   INITIALISED = 0
 
