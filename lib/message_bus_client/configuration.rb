@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MessageBusClient::Configuration
   def self.included(module_)
     module_.extend(ClassMethods)

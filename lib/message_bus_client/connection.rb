@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MessageBusClient::Connection
   # The connection is in the initialised state.
   INITIALISED = 0
@@ -105,10 +107,10 @@ module MessageBusClient::Connection
 
   # Gets the URI to poll the server with
   def server_endpoint
-    endpoint = "#{@base_url}/message-bus/#{@client_id}/poll"
+    endpoint = +"#{@base_url}/message-bus/#{@client_id}/poll"
     endpoint << '?dlp=t' unless self.class.long_polling
 
-    endpoint
+    endpoint.freeze
   end
 
   # Handles the response from the connection.

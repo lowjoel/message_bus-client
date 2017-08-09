@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MessageBusClient::MessageHandler
   SubscribedChannel = Struct.new(:callbacks, :last_id) do
     def initialize(last_id = -1)
@@ -13,7 +15,7 @@ module MessageBusClient::MessageHandler
   end
 
   # The chunk separator for chunked messages.
-  CHUNK_SEPARATOR = "\r\n|\r\n".freeze
+  CHUNK_SEPARATOR = "\r\n|\r\n"
 
   def initialize(base_url)
     super
@@ -23,7 +25,7 @@ module MessageBusClient::MessageHandler
     @subscribed_channels.default_proc = proc do |hash, key|
       hash[key] = SubscribedChannel.new
     end
-    @payload = ''
+    @payload = +''
   end
 
   def subscribe(channel, &callback)
