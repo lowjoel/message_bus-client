@@ -4,13 +4,13 @@ inherit_from:
 Metrics/LineLength:
   Max: 100
 
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: trailing
 
 Style/Documentation:
   Enabled: false
 
-Style/IndentHash:
+Layout/IndentHash:
   EnforcedStyle: consistent
 
 Style/StringLiterals:
