@@ -2,19 +2,19 @@
 
 module MessageBusClient::Connection
   # The connection is in the initialised state.
-  INITIALISED = 0
+  INITIALISED = :initialised
 
   # The connection is in the started state.
-  STARTED = 1
+  STARTED = :started
 
   # The connection is in the paused state.
-  PAUSED = 2
+  PAUSED = :paused
 
   # The connection is in the stopping state.
-  STOPPING = 3
+  STOPPING = :stopping
 
   # The connection is in the stopped state.
-  STOPPED = 4
+  STOPPED = :stopped
 
   def initialize(base_url)
     @connection = nil
