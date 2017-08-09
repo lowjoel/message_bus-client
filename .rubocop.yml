@@ -24,3 +24,9 @@ Style/RegexpLiteral:
 
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*_spec.rb'
