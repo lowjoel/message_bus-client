@@ -13,7 +13,7 @@ module MessageBusClient::MessageHandler
   end
 
   # The chunk separator for chunked messages.
-  CHUNK_SEPARATOR = "\r\n|\r\n"
+  CHUNK_SEPARATOR = "\r\n|\r\n".freeze
 
   def initialize(base_url)
     super
@@ -23,15 +23,14 @@ module MessageBusClient::MessageHandler
     @subscribed_channels.default_proc = proc do |hash, key|
       hash[key] = SubscribedChannel.new
     end
-    @payload = String.new
+    @payload = ''
   end
 
   def subscribe(channel, &callback)
     @subscribed_channels[channel].callbacks << callback
   end
 
-  def unsubscribe
-  end
+  def unsubscribe; end
 
   private
 
@@ -71,7 +70,6 @@ module MessageBusClient::MessageHandler
       @pending_messages.each(&handle_message_method)
       messages.each(&handle_message_method) if messages
     end
-
   end
 
   def handle_message(message)

@@ -23,8 +23,7 @@ module MessageBusClient::Connection
     @statistics = { total_calls: 0, failed_calls: 0 }
   end
 
-  def diagnostics
-  end
+  def diagnostics; end
 
   def start
     return unless @state == INITIALISED || stopped?
@@ -107,7 +106,7 @@ module MessageBusClient::Connection
   # Gets the URI to poll the server with
   def server_endpoint
     endpoint = "#{@base_url}/message-bus/#{@client_id}/poll"
-    endpoint << "?dlp=t" unless self.class.long_polling
+    endpoint << '?dlp=t' unless self.class.long_polling
 
     endpoint
   end

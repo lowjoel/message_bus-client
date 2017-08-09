@@ -107,7 +107,7 @@ RSpec.describe MessageBusClient do
     result = false
 
     subject.subscribe('/message') do |payload|
-      result = result || payload['data'] == text
+      result ||= payload['data'] == text
     end
 
     subject.resume

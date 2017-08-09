@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Simultaneous code coverage reporting to Coveralls and Code Climate.
 # Latest version can be found at https://gist.github.com/lowjoel/6c2f2d3a08bb3786994f
 require 'simplecov'
