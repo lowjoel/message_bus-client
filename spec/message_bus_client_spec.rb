@@ -19,6 +19,20 @@ RSpec.describe MessageBusClient do
       subject.stop
     end
 
+    it 'can stop client quickly' do
+      allow(MessageBusClient).to receive(:poll_interval).and_return(2)
+      timeout = MessageBusClient.poll_interval.to_f / 2
+
+      subject.start
+      sleep(timeout / 2) # let the background thread start the runner
+
+      Timeout.timeout(timeout * 1.1) do
+        subject.stop(timeout)
+      end
+
+      expect(subject).to be_stopped
+    end
+
     context 'when the connection times out' do
       it 'continues to long poll' do
         count = 0
@@ -70,6 +84,19 @@ RSpec.describe MessageBusClient do
     it 'connects to the server' do
       subject.start
       subject.stop
+    end
+
+    it 'can stop client quickly before the background thread starts' do
+      timeout = MessageBusClient.poll_interval.to_f / 2
+
+      subject.start
+      sleep(timeout / 2) # let the background thread start the runner
+
+      Timeout.timeout(timeout * 1.1) do
+        subject.stop(timeout)
+      end
+
+      expect(subject).to be_stopped
     end
 
     it 'receives messages' do
