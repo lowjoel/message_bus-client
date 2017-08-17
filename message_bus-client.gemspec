@@ -12,6 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Ruby client for Message Bus'
   spec.description   = 'Implements a client for Message Bus, with communication over HTTP'
   spec.homepage      = 'https://github.com/lowjoel/message_bus-client'
+  spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").
                        reject { |f| f.match(/^(test|spec|features)\//) }
