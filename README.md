@@ -56,3 +56,7 @@ If you are running Windows, Ruby is not able to kill the server process. Run it 
 Bug reports and pull requests are welcome on GitHub at
 https://github.com/lowjoel/message_bus-client.
 
+## MIT License
+
+Released under MIT License.
+
