@@ -15,4 +15,9 @@ class MessageBus::Client
     super
     @client_id = SecureRandom.uuid
   end
+
+  def get_client_id
+    @client_id
+  end
+
 end
