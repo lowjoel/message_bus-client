@@ -113,6 +113,16 @@ RSpec.describe MessageBusClient do
         sleep(1)
       end
     end
+
+    it 'handles empty message' do
+      expect(subject).to receive(:handle_response).with('').and_call_original.at_least(:once)
+
+      Excon.stub({}, body: '', status: 200)
+
+      subject.start(mock: true, persistent: false)
+
+      sleep(0.1)
+    end
   end
 
   it 'allows pausing messages' do

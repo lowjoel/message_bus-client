@@ -51,7 +51,7 @@ module MessageBusClient::MessageHandler
   end
 
   def handle_response(body)
-    handle_messages(JSON.parse(body))
+    handle_messages(JSON.parse(body)) unless body.empty?
   end
 
   def try_consume_message

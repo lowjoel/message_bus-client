@@ -27,10 +27,10 @@ module MessageBusClient::Connection
 
   def diagnostics; end
 
-  def start
+  def start(**options)
     return unless @state == INITIALISED || stopped?
 
-    @connection = Excon.new(server_endpoint, persistent: true)
+    @connection = Excon.new(server_endpoint, persistent: true, **options)
 
     @runner = Thread.new(&method(:runner))
     @runner.name = "MessageBusClient (#{@client_id})"

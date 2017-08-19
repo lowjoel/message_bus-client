@@ -94,4 +94,17 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
+
+  config.after(:each) do
+    Thread.list.each do |thread|
+      if thread.name&.match('MessageBusClient')
+        thread.kill
+        thread.join
+      end
+    end
+  end
+
+  config.after(:each) do
+    Excon.stubs.clear
+  end
 end
