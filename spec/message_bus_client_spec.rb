@@ -1,22 +1,36 @@
-RSpec.describe MessageBus::Client do
+RSpec.describe MessageBusClient do
   self::SERVER_BASE = 'http://127.0.0.1:9292'.freeze
 
   it 'has a version number' do
-    expect(MessageBus::Client::VERSION).not_to be nil
+    expect(MessageBusClient::VERSION).not_to be nil
   end
 
-  def write_message(message, user = 'message_bus-client')
+  def write_message(message, user = 'message_bus_client')
     Excon.post(URI.join(self.class::SERVER_BASE, '/message').to_s,
                body: URI.encode_www_form(name: user, data: message),
                headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
   end
 
-  subject { MessageBus::Client.new(self.class::SERVER_BASE) }
+  subject { MessageBusClient.new(self.class::SERVER_BASE) }
 
   context 'when using long polling' do
     it 'connects to the server' do
       subject.start
       subject.stop
+    end
+
+    it 'can stop client quickly' do
+      allow(MessageBusClient).to receive(:poll_interval).and_return(2)
+      timeout = MessageBusClient.poll_interval.to_f / 2
+
+      subject.start
+      sleep(timeout / 2) # let the background thread start the runner
+
+      Timeout.timeout(timeout * 1.1) do
+        subject.stop(timeout)
+      end
+
+      expect(subject).to be_stopped
     end
 
     context 'when the connection times out' do
@@ -56,20 +70,33 @@ RSpec.describe MessageBus::Client do
   context 'when using polling' do
     around(:each) do |example|
       begin
-        old_long_polling = MessageBus::Client.long_polling
-        old_poll_interval = MessageBus::Client.poll_interval
-        MessageBus::Client.poll_interval = 1
-        MessageBus::Client.long_polling = false
+        old_long_polling = MessageBusClient.long_polling
+        old_poll_interval = MessageBusClient.poll_interval
+        MessageBusClient.poll_interval = 1
+        MessageBusClient.long_polling = false
         example.call
       ensure
-        MessageBus::Client.poll_interval = old_poll_interval
-        MessageBus::Client.long_polling = old_long_polling
+        MessageBusClient.poll_interval = old_poll_interval
+        MessageBusClient.long_polling = old_long_polling
       end
     end
 
     it 'connects to the server' do
       subject.start
       subject.stop
+    end
+
+    it 'can stop client quickly before the background thread starts' do
+      timeout = MessageBusClient.poll_interval.to_f / 2
+
+      subject.start
+      sleep(timeout / 2) # let the background thread start the runner
+
+      Timeout.timeout(timeout * 1.1) do
+        subject.stop(timeout)
+      end
+
+      expect(subject).to be_stopped
     end
 
     it 'receives messages' do
@@ -85,6 +112,16 @@ RSpec.describe MessageBus::Client do
         write_message(text) # Keep writing because the message bus might not have started.
         sleep(1)
       end
+    end
+
+    it 'handles empty message' do
+      expect(subject).to receive(:handle_response).with('').and_call_original.at_least(:once)
+
+      Excon.stub({}, body: '', status: 200)
+
+      subject.start(mock: true, persistent: false)
+
+      sleep(0.1)
     end
   end
 
@@ -107,7 +144,7 @@ RSpec.describe MessageBus::Client do
     result = false
 
     subject.subscribe('/message') do |payload|
-      result = result || payload['data'] == text
+      result ||= payload['data'] == text
     end
 
     subject.resume

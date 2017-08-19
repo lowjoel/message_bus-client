@@ -1,18 +1,20 @@
-module MessageBus::Client::Connection
+# frozen_string_literal: true
+
+module MessageBusClient::Connection
   # The connection is in the initialised state.
-  INITIALISED = 0
+  INITIALISED = :initialised
 
   # The connection is in the started state.
-  STARTED = 1
+  STARTED = :started
 
   # The connection is in the paused state.
-  PAUSED = 2
+  PAUSED = :paused
 
   # The connection is in the stopping state.
-  STOPPING = 3
+  STOPPING = :stopping
 
   # The connection is in the stopped state.
-  STOPPED = 4
+  STOPPED = :stopped
 
   def initialize(base_url)
     @connection = nil
@@ -23,16 +25,18 @@ module MessageBus::Client::Connection
     @statistics = { total_calls: 0, failed_calls: 0 }
   end
 
-  def diagnostics
-  end
+  def diagnostics; end
 
-  def start
+  def start(**options)
     return unless @state == INITIALISED || stopped?
-    @state = STARTED
 
-    @connection = Excon.new(server_endpoint, persistent: true)
-    @runner = Thread.new { runner }
+    @connection = Excon.new(server_endpoint, persistent: true, **options)
+
+    @runner = Thread.new(&method(:runner))
+    @runner.name = "MessageBusClient (#{@client_id})"
     @runner.abort_on_exception = true
+
+    @state = STARTED
   end
 
   def pause
@@ -52,12 +56,22 @@ module MessageBus::Client::Connection
     handle_messages
   end
 
-  def stop
-    return unless @state == STARTED || @state == PAUSED
+  def stop(timeout = nil)
+    fail ThreadError if Thread.current == @runner
+
+    return if should_stop? || stopped?
 
     @state = STOPPING
     @connection.reset
-    @runner.join
+
+    wakeup # break out of light sleep when polling
+
+    unless @runner.join(timeout)
+      @runner.kill
+      @runner.join # just killing the thread is not enough to finish the work
+    end
+
+    @runner.stop?
   end
 
   def stopped?
@@ -66,9 +80,13 @@ module MessageBus::Client::Connection
 
   private
 
+  def should_stop?
+    @state == STOPPING
+  end
+
   # The runner handling polling over the connection.
   def runner
-    poll until @state == STOPPING
+    poll until should_stop?
   rescue Excon::Errors::Error
     @statistics[:failed_calls] += 1
     retry
@@ -106,15 +124,25 @@ module MessageBus::Client::Connection
 
   # Gets the URI to poll the server with
   def server_endpoint
-    endpoint = "#{@base_url}/message-bus/#{@client_id}/poll"
-    endpoint << "?dlp=t" unless self.class.long_polling
+    endpoint = +"#{@base_url}/message-bus/#{@client_id}/poll"
+    endpoint << '?dlp=t' unless self.class.long_polling
 
-    endpoint
+    endpoint.freeze
+  end
+
+  def light_sleep(seconds)
+    return if should_stop?
+    @_sleep_check, @_sleep_interrupt = IO.pipe
+    IO.select([@_sleep_check], nil, nil, seconds)
+  end
+
+  def wakeup
+    @_sleep_interrupt.close if defined?(@_sleep_interrupt) && !@_sleep_interrupt.closed?
   end
 
   # Handles the response from the connection.
   def handle_connection_response(response)
     handle_response(response.body)
-    sleep(self.class.poll_interval)
+    light_sleep(self.class.poll_interval)
   end
 end

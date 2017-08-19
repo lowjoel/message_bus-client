@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Simultaneous code coverage reporting to Coveralls and Code Climate.
 # Latest version can be found at https://gist.github.com/lowjoel/6c2f2d3a08bb3786994f
 require 'simplecov'
@@ -8,19 +10,16 @@ module CoverageHelper
     # gem.
     #
     # @param [String] name The name of the module to require.
-    # @param [Proc] initializer The block to execute when the module is required successfully.
-    def load(name, &initializer)
+    # @yield The block to execute when the module is required successfully.
+    def load(name)
       old_formatter = SimpleCov.formatter
       require name
-      initializer.call
+      yield
 
       merge_formatters(old_formatter, SimpleCov.formatter)
     rescue LoadError => e
-      if e.path == name
-        puts format('Cannot find \'%s\', ignoring', name) if ENV['CI']
-      else
-        raise e
-      end
+      raise e unless e.path == name
+      puts format('Cannot find \'%s\', ignoring', name) if ENV['CI']
     end
 
     private
@@ -52,14 +51,14 @@ if ENV['CI']
     Coveralls.wear!('rails')
   end
 
-  # Code Climate
-  CoverageHelper.load('codeclimate-test-reporter') do
-    CodeClimate::TestReporter.start
-  end
-
   # Code coverage exclusions
   SimpleCov.start do
     # SimpleCov configuration
-    # add_filter '/lib/extensions/active_record/connection_adapters/table_definition.rb'
+    # Helpers for schema migrations. We don't test schema migrations, so these would never run.
+    # add_filter '/lib/extensions/legacy/active_record/connection_adapters/table_definition.rb'
+
+    # Extra statistics to be placed in `rake stats`. We don't run that on CI, so coverage is not
+    # important.
+    # add_filter '/lib/tasks/coursemology/stats_setup.rake'
   end
 end

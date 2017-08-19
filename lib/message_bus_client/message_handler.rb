@@ -1,4 +1,6 @@
-module MessageBus::Client::MessageHandler
+# frozen_string_literal: true
+
+module MessageBusClient::MessageHandler
   SubscribedChannel = Struct.new(:callbacks, :last_id) do
     def initialize(last_id = -1)
       self.callbacks = []
@@ -23,15 +25,14 @@ module MessageBus::Client::MessageHandler
     @subscribed_channels.default_proc = proc do |hash, key|
       hash[key] = SubscribedChannel.new
     end
-    @payload = String.new
+    @payload = +''
   end
 
   def subscribe(channel, &callback)
     @subscribed_channels[channel].callbacks << callback
   end
 
-  def unsubscribe
-  end
+  def unsubscribe; end
 
   private
 
@@ -50,7 +51,7 @@ module MessageBus::Client::MessageHandler
   end
 
   def handle_response(body)
-    handle_messages(JSON.parse(body))
+    handle_messages(JSON.parse(body)) unless body.empty?
   end
 
   def try_consume_message
@@ -71,7 +72,6 @@ module MessageBus::Client::MessageHandler
       @pending_messages.each(&handle_message_method)
       messages.each(&handle_message_method) if messages
     end
-
   end
 
   def handle_message(message)

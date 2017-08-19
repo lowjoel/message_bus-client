@@ -1,16 +1,19 @@
 inherit_from:
   - .rubocop.unhound.yml
 
+AllCops:
+  TargetRubyVersion: 2.3
+
 Metrics/LineLength:
   Max: 100
 
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: trailing
 
 Style/Documentation:
   Enabled: false
 
-Style/IndentHash:
+Layout/IndentHash:
   EnforcedStyle: consistent
 
 Style/StringLiterals:
@@ -24,3 +27,14 @@ Style/RegexpLiteral:
 
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*_spec.rb'
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'

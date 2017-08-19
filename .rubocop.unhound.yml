@@ -1,44 +1,41 @@
-AccessorMethodName:
+Style/AccessorMethodName:
   Enabled: true
 
-ActionFilter:
+Style/Alias:
   Enabled: true
 
-Alias:
+Style/ArrayJoin:
   Enabled: true
 
-ArrayJoin:
+Style/AsciiComments:
   Enabled: true
 
-AsciiComments:
+Style/AsciiIdentifiers:
   Enabled: true
 
-AsciiIdentifiers:
+Style/Attr:
   Enabled: true
 
-Attr:
+Metrics/BlockNesting:
   Enabled: true
 
-BlockNesting:
+Style/CaseEquality:
   Enabled: true
 
-CaseEquality:
+Style/CharacterLiteral:
   Enabled: true
 
-CharacterLiteral:
-  Enabled: true
-
-ClassAndModuleChildren:
+Style/ClassAndModuleChildren:
   Enabled: true
   EnforcedStyle: compact
 
-ClassLength:
+Metrics/ClassLength:
   Enabled: true
 
-ClassVars:
+Style/ClassVars:
   Enabled: true
 
-CollectionMethods:
+Style/CollectionMethods:
   Enabled: true
   PreferredMethods:
     reduce:
@@ -46,199 +43,193 @@ CollectionMethods:
     find:
     detect: 'find'
 
-ColonMethodCall:
+Style/ColonMethodCall:
   Enabled: true
 
-CommentAnnotation:
+Style/CommentAnnotation:
   Enabled: true
 
-CyclomaticComplexity:
+Metrics/CyclomaticComplexity:
   Enabled: true
 
-Delegate:
+Style/PreferredHashMethods:
   Enabled: true
 
-DeprecatedHashMethods:
+Style/DoubleNegation:
   Enabled: true
 
-DoubleNegation:
+Style/EachWithObject:
   Enabled: true
 
-EachWithObject:
+Style/EmptyLiteral:
   Enabled: true
 
-EmptyLiteral:
-  Enabled: true
-
-Encoding:
+Style/Encoding:
   Enabled: false
 
-EvenOdd:
+Style/EvenOdd:
   Enabled: true
 
-ExtraSpacing:
+Layout/ExtraSpacing:
   Enabled: false
 
-FileName:
+Style/FileName:
   Enabled: true
 
-FlipFlop:
+Style/FlipFlop:
   Enabled: true
 
-FormatString:
+Style/FormatString:
   Enabled: true
 
-GlobalVars:
+Style/GlobalVars:
   Enabled: true
 
-GuardClause:
+Style/GuardClause:
   Enabled: true
 
-IfUnlessModifier:
+Style/IfUnlessModifier:
   Enabled: true
 
-IfWithSemicolon:
+Style/IfWithSemicolon:
   Enabled: true
 
-InlineComment:
+Style/InlineComment:
   Enabled: false
 
-Lambda:
+Style/Lambda:
   Enabled: true
 
-LambdaCall:
+Style/LambdaCall:
   Enabled: true
 
-LineEndConcatenation:
+Style/LineEndConcatenation:
   Enabled: true
 
-MethodLength:
+Metrics/MethodLength:
   Enabled: true
 
-ModuleFunction:
+Style/ModuleFunction:
   Enabled: true
 
-NegatedIf:
+Style/NegatedIf:
   Enabled: true
 
-NegatedWhile:
+Style/NegatedWhile:
   Enabled: true
 
-Next:
+Style/Next:
   Enabled: true
 
-NilComparison:
+Style/NilComparison:
   Enabled: true
 
-Not:
+Style/Not:
   Enabled: true
 
-NumericLiterals:
+Style/NumericLiterals:
   Enabled: true
 
-OneLineConditional:
+Style/OneLineConditional:
   Enabled: true
 
-OpMethod:
+Style/OpMethod:
   Enabled: true
 
-ParameterLists:
+Metrics/ParameterLists:
   Enabled: true
 
-PercentLiteralDelimiters:
+Style/PercentLiteralDelimiters:
   Enabled: true
 
-PerlBackrefs:
+Style/PerlBackrefs:
   Enabled: true
 
-PredicateName:
+Style/PredicateName:
   NamePrefixBlacklist: []
 
-Proc:
+Style/Proc:
   Enabled: true
 
-RaiseArgs:
+Style/RaiseArgs:
   Enabled: true
 
-RegexpLiteral:
+Style/RegexpLiteral:
   Enabled: true
 
-SelfAssignment:
+Style/SelfAssignment:
   Enabled: true
 
-SingleLineBlockParams:
+Style/SingleLineBlockParams:
   Enabled: true
 
-SingleLineMethods:
+Style/SingleLineMethods:
   Enabled: true
 
-SignalException:
+Style/SignalException:
   Enabled: true
 
-SpecialGlobalVars:
+Style/SpecialGlobalVars:
   Enabled: true
 
-VariableInterpolation:
+Style/VariableInterpolation:
   Enabled: true
 
-TrailingComma:
+Style/TrailingCommaInLiteral:
   Enabled: true
 
-TrivialAccessors:
+Style/TrivialAccessors:
   Enabled: true
 
-VariableInterpolation:
+Style/VariableInterpolation:
   Enabled: true
 
-WhenThen:
+Style/WhenThen:
   Enabled: true
 
-WhileUntilModifier:
+Style/WhileUntilModifier:
   Enabled: true
 
 # Lint
 
-AmbiguousOperator:
+Lint/AmbiguousOperator:
   Enabled: true
 
-AmbiguousRegexpLiteral:
+Lint/AmbiguousRegexpLiteral:
   Enabled: true
 
-AssignmentInCondition:
+Lint/AssignmentInCondition:
   Enabled: true
 
-ConditionPosition:
+Lint/ConditionPosition:
   Enabled: true
 
-DeprecatedClassMethods:
+Lint/ElseLayout:
   Enabled: true
 
-ElseLayout:
+Lint/HandleExceptions:
   Enabled: true
 
-HandleExceptions:
+Lint/InvalidCharacterLiteral:
   Enabled: true
 
-InvalidCharacterLiteral:
+Lint/LiteralInCondition:
   Enabled: true
 
-LiteralInCondition:
+Lint/LiteralInInterpolation:
   Enabled: true
 
-LiteralInInterpolation:
+Lint/Loop:
   Enabled: true
 
-Loop:
+Lint/ParenthesesAsGroupedExpression:
   Enabled: true
 
-ParenthesesAsGroupedExpression:
+Lint/RequireParentheses:
   Enabled: true
 
-RequireParentheses:
+Lint/UnderscorePrefixedVariableName:
   Enabled: true
 
-UnderscorePrefixedVariableName:
-  Enabled: true
-
-Void:
+Lint/Void:
   Enabled: true
