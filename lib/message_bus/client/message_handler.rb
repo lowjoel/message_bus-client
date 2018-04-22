@@ -1,6 +1,6 @@
 module MessageBus::Client::MessageHandler
   SubscribedChannel = Struct.new(:callbacks, :last_id) do
-    def initialize(last_id = -1)
+    def initialize(last_id)
       self.callbacks = []
       self.last_id = last_id
     end
@@ -20,14 +20,16 @@ module MessageBus::Client::MessageHandler
 
     @pending_messages = []
     @subscribed_channels = {}
-    @subscribed_channels.default_proc = proc do |hash, key|
-      hash[key] = SubscribedChannel.new
-    end
     @payload = String.new
   end
 
-  def subscribe(channel, &callback)
-    @subscribed_channels[channel].callbacks << callback
+  def subscribe(channel, last_id=-1, &callback)
+    subscribed_channel = @subscribed_channels[channel]
+    if subscribed_channel.nil?
+      subscribed_channel = @subscribed_channels[channel] =
+        SubscribedChannel.new(last_id)
+    end
+    subscribed_channel.callbacks << callback
   end
 
   def unsubscribe
