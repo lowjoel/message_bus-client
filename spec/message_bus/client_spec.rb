@@ -113,4 +113,20 @@ RSpec.describe MessageBus::Client do
     subject.resume
     expect(result).to eq(true)
   end
+
+  it 'allows subscription exposing the message_id' do
+    subject.start
+
+    text = "Hello World! #{Random.rand}"
+    result = false
+    subject.subscribe('/message') do |payload, message_id|
+      result = true if payload['data'] == text
+      expect(message_id).to be_an Integer
+    end
+
+    until result
+      write_message(text) # Keep writing because the message bus might not have started.
+      sleep(1)
+    end
+  end
 end
