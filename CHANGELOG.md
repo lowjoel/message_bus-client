@@ -7,3 +7,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Ability to specify `last_id` of a channel
+- Get access to `message_id` if specified in the callback

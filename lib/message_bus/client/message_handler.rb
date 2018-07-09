@@ -5,9 +5,9 @@ module MessageBus::Client::MessageHandler
       self.last_id = last_id
     end
 
-    def callback(payload)
+    def callback(payload, message_id)
       callbacks.each do |callback|
-        callback.call(payload)
+        callback.call(payload, message_id)
       end
     end
   end
@@ -82,8 +82,9 @@ module MessageBus::Client::MessageHandler
     subscription = @subscribed_channels[message['channel']]
     return unless subscription
 
-    subscription.last_id = message['message_id']
-    subscription.callback(message['data'])
+    message_id = message['message_id']
+    subscription.last_id = message_id
+    subscription.callback(message['data'], message_id)
   end
 
   def handle_status_message(message)
