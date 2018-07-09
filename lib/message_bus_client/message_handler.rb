@@ -1,4 +1,4 @@
-module MessageBus::Client::MessageHandler
+module MessageBusClient::MessageHandler
   SubscribedChannel = Struct.new(:callbacks, :last_id) do
     def initialize(last_id)
       self.callbacks = []

@@ -1,17 +1,17 @@
-RSpec.describe MessageBus::Client do
+RSpec.describe MessageBusClient do
   self::SERVER_BASE = 'http://127.0.0.1:9292'.freeze
 
   it 'has a version number' do
-    expect(MessageBus::Client::VERSION).not_to be nil
+    expect(MessageBusClient::VERSION).not_to be nil
   end
 
-  def write_message(message, user = 'message_bus-client')
+  def write_message(message, user = 'message_bus_client')
     Excon.post(URI.join(self.class::SERVER_BASE, '/message').to_s,
                body: URI.encode_www_form(name: user, data: message),
                headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
   end
 
-  subject { MessageBus::Client.new(self.class::SERVER_BASE) }
+  subject { MessageBusClient.new(self.class::SERVER_BASE) }
 
   context 'when using long polling' do
     it 'connects to the server' do
@@ -56,14 +56,14 @@ RSpec.describe MessageBus::Client do
   context 'when using polling' do
     around(:each) do |example|
       begin
-        old_long_polling = MessageBus::Client.long_polling
-        old_poll_interval = MessageBus::Client.poll_interval
-        MessageBus::Client.poll_interval = 1
-        MessageBus::Client.long_polling = false
+        old_long_polling = MessageBusClient.long_polling
+        old_poll_interval = MessageBusClient.poll_interval
+        MessageBusClient.poll_interval = 1
+        MessageBusClient.long_polling = false
         example.call
       ensure
-        MessageBus::Client.poll_interval = old_poll_interval
-        MessageBus::Client.long_polling = old_long_polling
+        MessageBusClient.poll_interval = old_poll_interval
+        MessageBusClient.long_polling = old_long_polling
       end
     end
 
