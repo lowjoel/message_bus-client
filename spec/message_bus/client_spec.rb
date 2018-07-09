@@ -1,17 +1,17 @@
-RSpec.describe MessageBus::Client do
+RSpec.describe MessageBusClient do
   self::SERVER_BASE = 'http://127.0.0.1:9292'.freeze
 
   it 'has a version number' do
-    expect(MessageBus::Client::VERSION).not_to be nil
+    expect(MessageBusClient::VERSION).not_to be nil
   end
 
-  def write_message(message, user = 'message_bus-client')
+  def write_message(message, user = 'message_bus_client')
     Excon.post(URI.join(self.class::SERVER_BASE, '/message').to_s,
                body: URI.encode_www_form(name: user, data: message),
                headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
   end
 
-  subject { MessageBus::Client.new(self.class::SERVER_BASE) }
+  subject { MessageBusClient.new(self.class::SERVER_BASE) }
 
   context 'when using long polling' do
     it 'connects to the server' do
@@ -37,7 +37,7 @@ RSpec.describe MessageBus::Client do
       end
     end
 
-    it 'receives messages' do
+    it 'receives new messages by default (last_id of -1)' do
       subject.start
 
       text = "Hello World! #{Random.rand}"
@@ -56,14 +56,14 @@ RSpec.describe MessageBus::Client do
   context 'when using polling' do
     around(:each) do |example|
       begin
-        old_long_polling = MessageBus::Client.long_polling
-        old_poll_interval = MessageBus::Client.poll_interval
-        MessageBus::Client.poll_interval = 1
-        MessageBus::Client.long_polling = false
+        old_long_polling = MessageBusClient.long_polling
+        old_poll_interval = MessageBusClient.poll_interval
+        MessageBusClient.poll_interval = 1
+        MessageBusClient.long_polling = false
         example.call
       ensure
-        MessageBus::Client.poll_interval = old_poll_interval
-        MessageBus::Client.long_polling = old_long_polling
+        MessageBusClient.poll_interval = old_poll_interval
+        MessageBusClient.long_polling = old_long_polling
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe MessageBus::Client do
       subject.stop
     end
 
-    it 'receives messages' do
+    it 'receives new messages by default (last_id of -1)' do
       subject.start
 
       text = "Hello World! #{Random.rand}"
@@ -112,5 +112,21 @@ RSpec.describe MessageBus::Client do
 
     subject.resume
     expect(result).to eq(true)
+  end
+
+  it 'allows subscription exposing the message_id' do
+    subject.start
+
+    text = "Hello World! #{Random.rand}"
+    result = false
+    subject.subscribe('/message') do |payload, message_id|
+      result = true if payload['data'] == text
+      expect(message_id).to be_an Integer
+    end
+
+    until result
+      write_message(text) # Keep writing because the message bus might not have started.
+      sleep(1)
+    end
   end
 end
