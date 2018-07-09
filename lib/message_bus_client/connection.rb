@@ -81,7 +81,9 @@ module MessageBusClient::Connection
     @statistics[:total_calls] += 1
 
     response = @connection.post(request_parameters)
-    handle_connection_response(response) unless self.class.long_polling
+    unless MessageBusClient.configuration.long_polling
+      handle_connection_response(response)
+    end
   end
 
   # The request parameters when connecting to the server with Excon.
@@ -89,7 +91,9 @@ module MessageBusClient::Connection
     request_body = URI.encode_www_form(subscribed_channel_indices.
                                        merge(__seq: @statistics[:total_calls]))
     request_parameters = { body: request_body, headers: headers, read_timeout: 360 }
-    request_parameters[:response_block] = method(:handle_chunk).to_proc if self.class.long_polling
+    if MessageBusClient.configuration.long_polling
+      request_parameters[:response_block] = method(:handle_chunk).to_proc
+    end
 
     request_parameters
   end
@@ -99,7 +103,9 @@ module MessageBusClient::Connection
     headers = {}
     headers['Content-Type'] = 'application/x-www-form-urlencoded'
     headers['X-SILENCE-LOGGER'] = 'true'
-    headers['Dont-Chunk'] = 'true' unless self.class.long_polling
+    unless MessageBusClient.configuration.long_polling
+      headers['Dont-Chunk'] = 'true'
+    end
 
     headers
   end
@@ -107,7 +113,9 @@ module MessageBusClient::Connection
   # Gets the URI to poll the server with
   def server_endpoint
     endpoint = "#{@base_url}/message-bus/#{@client_id}/poll"
-    endpoint << "?dlp=t" unless self.class.long_polling
+    unless MessageBusClient.configuration.long_polling
+      endpoint << "?dlp=t"
+    end
 
     endpoint
   end
@@ -115,6 +123,6 @@ module MessageBusClient::Connection
   # Handles the response from the connection.
   def handle_connection_response(response)
     handle_response(response.body)
-    sleep(self.class.poll_interval)
+    sleep(MessageBusClient.configuration.poll_interval)
   end
 end

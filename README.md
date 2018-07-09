@@ -21,6 +21,22 @@ Or install it yourself as:
 
     $ gem install message_bus_client
 
+## Upgrading from `MessageBus::Client`
+
+1) Change `Gemfile` `gem "message_bus-client"` to `gem "message_bus_client"`
+2) Change configuration:
+  - `MessageBus.long_polling = true` to `MessageBusClient.configuration.long_polling = true`
+  - `MessageBus.poll_interval = 15` to `MessageBusClient.configuration.poll_interval = 15`
+  - or...
+
+  ```ruby
+  MessageBusClient.configure do |c|
+    c.long_polling = true
+    c.poll_interval = 15
+  end
+  ```
+3) Change calls to `MessageBus::Client.new` to `MessageBusClient.new`
+
 ## Usage
 
 The API is mostly equivalent with the JavaScript client:
@@ -40,8 +56,10 @@ client.stop
 Both Long Polling and normal polling are supported:
 
 ```ruby
-MessageBusClient.long_polling = true # false to disable
-MessageBusClient.poll_interval = 15 # seconds
+MessageBusClient.configure do |c|
+  c.long_polling = true # false to disable
+  c.poll_interval = 15 # seconds
+end
 ```
 
 ## Development

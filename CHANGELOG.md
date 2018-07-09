@@ -8,3 +8,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Ability to specify `last_id` of a channel
 - Get access to `message_id` if specified in the callback
+
+### Changed
+- Rename gem to `message_bus_client` to avoid name collisions with `MessageBus` gem
