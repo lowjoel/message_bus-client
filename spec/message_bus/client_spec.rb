@@ -37,7 +37,7 @@ RSpec.describe MessageBus::Client do
       end
     end
 
-    it 'receives messages' do
+    it 'receives new messages by default (last_id of -1)' do
       subject.start
 
       text = "Hello World! #{Random.rand}"
@@ -72,7 +72,7 @@ RSpec.describe MessageBus::Client do
       subject.stop
     end
 
-    it 'receives messages' do
+    it 'receives new messages by default (last_id of -1)' do
       subject.start
 
       text = "Hello World! #{Random.rand}"

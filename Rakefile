@@ -11,9 +11,18 @@ task :server do
   end
 
   at_exit do
-    $stderr.puts "Killing pid #{pid}"
-    Process.kill('KILL', pid)
-    Process.wait(pid)
+    if RbConfig::CONFIG["host_os"] =~ /mswin|mingw/
+      $stderr.puts "Killing pid #{pid}"
+      Process.kill('KILL', pid)
+      Process.wait(pid)
+    else
+      child_pid = `pgrep -P #{pid}`.to_i
+      pids = [child_pid, pid]
+      pids.each do |pid|
+        $stderr.puts "Killing pid #{pid}"
+        Process.kill('KILL', pid)
+      end
+    end
   end
 
   sleep 3
